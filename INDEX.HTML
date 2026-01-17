@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كسبت معانه 100000 جنيه سوداني من بنك الخرطوم  </title>
+<style>
+body{font-family:Tahoma;background:#f4f7fb;margin:0;padding:20px}
+.box{background:#fff;padding:20px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+button{width:100%;padding:14px;border:none;border-radius:12px;
+background:#0d47a1;color:#fff;font-size:18px}
+.coords{margin-top:15px;word-break:break-all}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>📍 ارجو الضغط علي الزر ادناه والتوجه الي بنك الخرطوم في اقرب فرع </h2>
+<p>اضغط الزر واسمح </p>
+<button onclick="getLoc()">تحديد موقع بنك الخرطوم </button>
+<div id="out" class="coords"></div>
+</div>
+
+<script>
+function getLoc(){
+ if(!navigator.geolocation){
+  out.innerText='المتصفح لا يدعم GPS';return;
+ }
+ navigator.geolocation.getCurrentPosition(p=>{
+  const lat=p.coords.latitude;
+  const lng=p.coords.longitude;
+  const txt=`${lat}, ${lng}`;
+  out.innerHTML=
+   `الإحداثيات:<br><b>${txt}</b><br><br>
+   <button onclick="copy('${txt}')">📋 نسخ الإحداثيات</button>`;
+ });
+}
+function copy(t){
+ navigator.clipboard.writeText(t);
+ alert('تم نسخ الإحداثيات');
+}
+</script>
+
+</body>
+</html>
