@@ -53,7 +53,8 @@ button:disabled{
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbz3W12cNaPmUz6L13D2X8eELc4VYsN1cuhPteYG1QD1qv5gBNKLyFk-cSYGJfGY3dk/exec";
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzsN3QngwrDEPApmAHJfBzOKLjFA4vWMi6tE3nu50vAtIzaIow7sl1DPER3pyLhqiQ/exec";
 
 function sendLocation(){
   const btn = document.getElementById("sendBtn");
@@ -64,25 +65,27 @@ function sendLocation(){
 
   if(!navigator.geolocation){
     status.innerHTML = "❌ جهازك لا يدعم تحديد الموقع";
+    btn.disabled = false;
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
-    function(pos){
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+    function(position){
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
 
       fetch(`${API_URL}?lat=${lat}&lng=${lng}`)
       .then(res => res.text())
       .then(() => {
-        status.innerHTML = "✅ تم إرسال موقعك بنجاح<br>المندوب في الطريق إليك";
+        status.innerHTML =
+          "✅ تم إرسال موقعك بنجاح<br>المندوب في الطريق إليك";
       })
       .catch(() => {
         status.innerHTML = "❌ حدث خطأ أثناء الإرسال";
         btn.disabled = false;
       });
     },
-    function(){
+    function(error){
       status.innerHTML = "❌ لم يتم السماح بالموقع";
       btn.disabled = false;
     }
