@@ -145,7 +145,11 @@
   .plane-card{
     position:absolute; inset:0;
     border-radius:24px;
-    background:linear-gradient(160deg, #12314f 0%, #0a1a2f 100%);
+    background:
+      linear-gradient(160deg, rgba(10,26,47,0.55) 0%, rgba(10,26,47,0.85) 100%),
+      url('https://images.unsplash.com/photo-1672152239496-b2ac8ca8cfb7?fm=jpg&q=80&w=1200&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
     border:1px solid rgba(201,164,76,0.25);
     overflow:hidden;
     box-shadow:0 30px 60px rgba(0,0,0,0.5);
@@ -155,23 +159,7 @@
     background:radial-gradient(circle, rgba(201,164,76,0.18), transparent 70%);
     top:-100px; left:-80px;
   }
-  .globe-lines{
-    position:absolute; inset:0; opacity:0.15;
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(201,164,76,0.5) 39px),
-      repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(201,164,76,0.5) 39px);
-  }
-  .plane-icon{
-    position:absolute; top:50%; right:50%; transform:translate(50%,-50%);
-    width:130px; height:130px; color:var(--gold-light);
-    animation:float 4s ease-in-out infinite;
-    filter:drop-shadow(0 10px 25px rgba(201,164,76,0.4));
-  }
-  @keyframes float{
-    0%,100%{transform:translate(50%,-50%) rotate(-8deg) translateY(0px);}
-    50%{transform:translate(50%,-50%) rotate(-8deg) translateY(-18px);}
-  }
-  .trail{position:absolute; border-radius:50%; background:rgba(201,164,76,0.5); animation:twinkle 3s ease-in-out infinite;}
+  .trail{position:absolute; border-radius:50%; background:rgba(201,164,76,0.6); animation:twinkle 3s ease-in-out infinite;}
   @keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
   .stat-chip{
     position:absolute; bottom:24px; left:24px; right:24px;
@@ -256,6 +244,44 @@
   .fr-status{
     background:rgba(76,201,120,0.15); color:#7be3a0; font-weight:800;
     padding:8px 18px; border-radius:30px; font-size:0.85rem;
+  }
+
+  /* لوحة الرحلات الوهمية (مغادرة / وصول) */
+  .board-wrap{max-width:1100px; margin:50px auto 0;}
+  .board-tabs{display:flex; gap:10px; margin-bottom:20px;}
+  .board-tab{
+    background:rgba(255,255,255,0.04); border:1px solid rgba(201,164,76,0.25);
+    color:var(--muted); font-weight:700; padding:10px 26px; border-radius:30px;
+    cursor:pointer; font-family:inherit; font-size:0.9rem; transition:.25s;
+  }
+  .board-tab.active{
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    color:var(--navy); border-color:transparent;
+  }
+  .board{
+    background:rgba(255,255,255,0.02); border:1px solid rgba(201,164,76,0.2);
+    border-radius:16px; overflow:hidden;
+  }
+  .board table{width:100%; border-collapse:collapse;}
+  .board th{
+    text-align:right; padding:16px 20px; font-size:0.82rem; color:var(--gold-light);
+    text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid rgba(201,164,76,0.2);
+  }
+  .board td{padding:16px 20px; font-size:0.92rem; border-bottom:1px solid rgba(255,255,255,0.04);}
+  .board tr:last-child td{border-bottom:none;}
+  .board tbody tr{transition:.2s;}
+  .board tbody tr:hover{background:rgba(201,164,76,0.05);}
+  .b-flight{color:#fff; font-weight:800;}
+  .b-pill{
+    display:inline-block; padding:5px 14px; border-radius:20px; font-size:0.78rem; font-weight:800;
+  }
+  .pill-ontime{background:rgba(76,201,120,0.15); color:#7be3a0;}
+  .pill-delayed{background:rgba(240,193,75,0.15); color:#f0c14b;}
+  .pill-boarding{background:rgba(139,184,232,0.18); color:#8bb8e8;}
+  .pill-landed{background:rgba(200,200,200,0.15); color:#c9cdd3;}
+  .pill-cancelled{background:rgba(232,139,139,0.18); color:#e88b8b;}
+  @media(max-width:700px){
+    .board th:nth-child(4), .board td:nth-child(4){display:none;}
   }
 
   /* ===== قسم الإجراءات / خطوات التأشيرة ===== */
@@ -376,13 +402,9 @@
     </div>
     <div class="hero-visual">
       <div class="plane-card">
-        <div class="globe-lines"></div>
         <div class="trail" style="width:6px;height:6px;top:20%;left:15%;"></div>
         <div class="trail" style="width:4px;height:4px;top:70%;left:75%;animation-delay:1s;"></div>
         <div class="trail" style="width:5px;height:5px;top:35%;left:80%;animation-delay:2s;"></div>
-        <svg class="plane-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 2v1.5l4-1 4 1V21l-2.5-2v-5.5L21 16z"/>
-        </svg>
         <div class="stat-chip">
           <div><b>+50k</b><small>تأشيرة تمت معالجتها</small></div>
           <div><b>24</b><small>ساعة متابعة</small></div>
@@ -465,6 +487,27 @@
       <div class="fr-item"><b id="fr-route">الخرطوم → الرياض</b><small>خط السير</small></div>
       <div class="fr-item"><b id="fr-time">14:35</b><small>موعد الإقلاع</small></div>
       <div class="fr-status" id="fr-status">في الموعد</div>
+    </div>
+  </div>
+
+  <div class="board-wrap">
+    <div class="board-tabs">
+      <button class="board-tab active" id="tab-dep" onclick="showBoard('departures')">المغادرة</button>
+      <button class="board-tab" id="tab-arr" onclick="showBoard('arrivals')">الوصول</button>
+    </div>
+    <div class="board">
+      <table>
+        <thead>
+          <tr>
+            <th>رقم الرحلة</th>
+            <th>الوجهة</th>
+            <th>الوقت</th>
+            <th>البوابة</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="board-body"></tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -585,6 +628,48 @@
     'QR-1311': {route:'الدوحة → الخرطوم', time:'18:45', status:'في الموعد', color:'#7be3a0', bg:'rgba(76,201,120,0.15)'},
     'MS-843': {route:'القاهرة → الخرطوم', time:'11:20', status:'وصلت', color:'#8bb8e8', bg:'rgba(139,184,232,0.15)'}
   };
+
+  // لوحة الرحلات الوهمية الكاملة (مغادرة ووصول)
+  const boardData = {
+    departures: [
+      {num:'SD-102', dest:'الرياض', time:'14:35', gate:'B3', status:'في الموعد', pill:'pill-ontime'},
+      {num:'SD-210', dest:'جدة',   time:'16:10', gate:'A5', status:'إنهاء الإجراءات', pill:'pill-boarding'},
+      {num:'EK-726', dest:'دبي',   time:'17:45', gate:'C2', status:'تأخير 20 دقيقة', pill:'pill-delayed'},
+      {num:'QR-1312','dest':'الدوحة','time':'19:20','gate':'B1','status':'في الموعد', pill:'pill-ontime'},
+      {num:'MS-844', dest:'القاهرة','time':'20:05','gate':'A2','status':'ملغاة', pill:'pill-cancelled'},
+      {num:'TK-671', dest:'اسطنبول','time':'22:15','gate':'C4','status':'في الموعد', pill:'pill-ontime'}
+    ],
+    arrivals: [
+      {num:'MS-843', dest:'من القاهرة','time':'11:20','gate':'A2','status':'وصلت', pill:'pill-landed'},
+      {num:'QR-1311','dest':'من الدوحة','time':'18:45','gate':'B1','status':'في الموعد', pill:'pill-ontime'},
+      {num:'EK-725', dest:'من دبي',   'time':'09:10','gate':'C2','status':'تأخير 20 دقيقة', pill:'pill-delayed'},
+      {num:'SV-503', dest:'من الرياض','time':'13:00','gate':'B4','status':'وصلت', pill:'pill-landed'},
+      {num:'TK-672', dest:'من اسطنبول','time':'15:40','gate':'C1','status':'في الموعد', pill:'pill-ontime'},
+      {num:'FZ-215', dest:'من دبي',  'time':'21:30','gate':'A1','status':'إنهاء الإجراءات', pill:'pill-boarding'}
+    ]
+  };
+
+  function renderBoard(type){
+    const body = document.getElementById('board-body');
+    body.innerHTML = boardData[type].map(f => `
+      <tr>
+        <td class="b-flight">${f.num}</td>
+        <td>${f.dest}</td>
+        <td>${f.time}</td>
+        <td>${f.gate}</td>
+        <td><span class="b-pill ${f.pill}">${f.status}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function showBoard(type){
+    document.getElementById('tab-dep').classList.toggle('active', type === 'departures');
+    document.getElementById('tab-arr').classList.toggle('active', type === 'arrivals');
+    renderBoard(type);
+  }
+
+  // تعبئة اللوحة تلقائيًا عند تحميل الصفحة
+  renderBoard('departures');
 
   function checkFlight(){
     const input = document.getElementById('flightNumber').value.trim().toUpperCase();
